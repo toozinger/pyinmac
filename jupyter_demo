@@ -1,0 +1,18 @@
+#!/bin/sh
+# ------------------------------------------------------
+JUPYTER=/usr/local/anaconda3/bin/jupyter-notebook
+BROWSER=/usr/bin/chromium
+# ------------------------------------------------------
+
+SCRIPT=`readlink -f $0`
+export TOPDIR=`dirname ${SCRIPT}`
+export PYTHONPATH=${TOPDIR}:${PYTHONPATH}
+
+${BROWSER} > /dev/null 2>&1 &
+BROWSER_PID=$!
+${JUPYTER} --browser=${BROWSER} &
+JUPYTER_PID=$!
+
+wait ${BROWSER_PID}
+kill -TERM ${JUPYTER_PID}
+sleep 1
