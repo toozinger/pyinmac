@@ -15,7 +15,8 @@ from pyinmac import connect_inmac_db, check_machine_table, get_time, add_data, \
 class TestDB(TestCase):
 
     def test_db(self):
-        db = connect_inmac_db('private', 'test_user', 't35tP455', 
+        server = 'OT2'  # 'private'
+        db = connect_inmac_db(server, 'test_user', 't35tP455', 
                               db_name='test_db')
         mach = 'test_machine'
         ret = check_machine_table(db, mach)

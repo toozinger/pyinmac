@@ -23,5 +23,12 @@ servers = {
             'grafana': 3030,
             'mysql':   3317
         }
+    },
+    'OT2': {
+        'host': 'ecn-inmactb2.ecn.purdue.edu',
+        'ports': {
+            'grafana': 3030,
+            'mysql':   3317
+        }
     }
 }

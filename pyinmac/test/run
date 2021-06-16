@@ -3,4 +3,6 @@ SCRIPT=`readlink -f $0`
 TESTDIR=`dirname ${SCRIPT}`
 SRCDIR=`dirname ${TESTDIR}`
 TOPDIR=`dirname ${SRCDIR}`
-${TOPDIR}/runpy -m unittest discover -s ${TESTDIR} $*
+#PYARGS=
+PYARGS="-W ignore"  # FIXME
+${TOPDIR}/runpy ${PYARGS} -m unittest discover -s ${TESTDIR} $*
