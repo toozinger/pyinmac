@@ -8,7 +8,7 @@ LICENSE
 """
 
 servers = {
-    'public': {
+    'dev': {
         'host': 'ldvinmac01.itap.purdue.edu',
         'ports': {
             'ptcm':    2112,
@@ -16,7 +16,7 @@ servers = {
             'mysql':   3317
         }
     },
-    'private': {
+    'prod': {
         'host': 'lpvinmac01.itap.purdue.edu',
         'ports': {
             'ptcm':    2112,
@@ -28,7 +28,8 @@ servers = {
         'host': 'ecn-inmactb2.ecn.purdue.edu',
         'ports': {
             'grafana': 3030,
-            'mysql':   3317
+            'mysql':   3317,
+            'influx':  8086
         }
     }
 }

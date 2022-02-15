@@ -28,7 +28,7 @@ def connect_inmac_db(server_name, user_name, password, db_name='IMT_machines'):
 # TODO cf Kepware/Token_Line table?
 
 create_table_sql = \
-    'CREATE TABLE {0} (id INT AUTO_INCREMENT NOT NULL PRIMARY KEY, Time DATETIME(6) NOT NULL, Value VARCHAR(255) NOT NULL, Metric VARCHAR(255) NOT NULL)'
+    'CREATE TABLE IF NOT EXISTS {0} (id INT AUTO_INCREMENT NOT NULL PRIMARY KEY, Time DATETIME(6) NOT NULL, Value VARCHAR(255) NOT NULL, Metric VARCHAR(255) NOT NULL)'
 
 def check_machine_table(db, machine_name):
     """

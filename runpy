@@ -1,6 +1,8 @@
 #!/bin/sh
 
+# Don't need this path _IF_ using conda mysql environment
 PYTHON=/usr/local/anaconda3/bin/python
+#PYTHON=python
 
 SCRIPT=`readlink -f $0`
 TOPDIR=`dirname ${SCRIPT}`
