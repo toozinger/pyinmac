@@ -10,14 +10,33 @@ LICENSE
 from mysql.connector import connect
 from datetime import datetime
 from .servers import servers
+import traceback
+import mysql
 
 def connect_inmac_db(server_name, user_name, password, db_name='IMT_machines'):
     """Return a connection to an IN-MaC MySQL database"""
-    s = servers[server_name]
-    db = connect(host=s['host'], user=user_name, password=password, 
-                 database=db_name, port=s['ports']['mysql'])
-    db.get_warnings = True
-    return db
+    # Select server and check if valid
+    try:
+        s = servers[server_name]
+    except KeyError:
+        raise Exception("UnknownServer") from None
+    except: raise
+    
+    # Connect to host, catching common errors
+    try:
+        db = connect(host=s['host'], user=user_name, password=password, 
+                     database=db_name, port=s['ports']['mysql'])
+        db.get_warnings = True
+        return db
+    except mysql.connector.errors.ProgrammingError as error:
+        if error.errno == 1045:
+              raise Exception("AccessDeniedForUser") from None
+        elif error.errno == 1044:
+            raise Exception("NoAccessToThisDatabase") from None
+        else:
+            raise
+    except:
+        raise
 
 # Columns:
 # id      (int, primary)
@@ -55,9 +74,19 @@ def add_data(db, machine_name, time, value, metric):
     """Insert new data into the specified machine table"""
     c = db.cursor()
     s = 'INSERT INTO {0} (Time, Value, Metric) VALUES (%s, %s, %s)'
-    c.execute(s.format(machine_name), (time, str(value), metric))
-    c.close()
-    db.commit()
+    
+    # Checks for common errors
+    try:
+        c.execute(s.format(machine_name), (time, str(value), metric))
+        c.close()
+        db.commit()
+    except mysql.connector.errors.ProgrammingError as error:
+        if error.errno == 1146:
+            raise Exception("TableDoesNotExist") from None
+        else:
+            raise
+    except:
+        raise
 
 def get_data(db, machine_name, metric, where=None):
     """
@@ -67,7 +96,14 @@ def get_data(db, machine_name, metric, where=None):
     s = 'SELECT Time, Value FROM {0} WHERE Metric = "{1}"'
     if where is not None:
         s += ' AND '+where
-    c.execute(s.format(machine_name, metric))
+    # Catch common errors
+    try:
+        c.execute(s.format(machine_name, metric))
+    except mysql.connector.errors.ProgrammingError as error:
+        if error.errno == 1146:
+            raise Exception("TableDoesNotExist") from None
+        else:
+            raise
     t = []
     x = []
     for r in c.fetchall():
